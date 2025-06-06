@@ -1,0 +1,255 @@
+"base.html"
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--Simple.css-->
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>Django To-do Lists</title>
+</head>
+
+<body>
+    <div>
+        <h1 onclick="location.href='{% url "index" %}'">
+            Django To-do Lists
+        </h1>
+    </div>
+    <div>
+        {% block content %}
+        This content will be replaced by different html code for each page.
+        {% endblock %}
+    </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+"index.html"
+
+{% extends "base.html" %}
+{% block content %}
+<!--index.html-->
+{% if object_list %}
+<h3>All my lists</h3>
+{% endif %}
+<ul>
+    {% for todolist in object_list %}
+    <li>
+        <div
+            role="button"
+            onclick="location.href='{% url "list" todolist.id %}'">
+            {{ todolist.title }}
+        </div>
+    </li>
+    {% empty %}
+    <h4>You have no lists!</h4>
+    {% endfor %}
+</ul>
+
+<p>
+    <input
+        value="Add a new list"
+        type="button"
+        onclick="location.href='{% url "list-add" %}'"/>
+</p>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+"todo_list.html"
+
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <div>
+        <div>
+            <h3>Edit list:</h3>
+            <h5>{{ todo_list.title | upper }}</h5>
+        </div>
+        <ul>
+            {% for todo in object_list %}
+            <li>
+                <div>
+                    <div
+                        role="button"
+                        onclick="location.href=
+                        '{% url "item-update" todo_list.id todo.id %}'">
+                        {{ todo.title }}
+                        (Due {{ todo.due_date | date:"l, F j" }})
+                    </div>
+                </div>
+            </li>
+            {% empty %}
+            <p>There are no to-do items in this list.</p>
+            {% endfor %}
+        </ul>
+        <p>
+            <input
+                value="Add a new item"
+                type="button"
+                onclick="location.href='{% url "item-add" todo_list.id %}'" />
+            <input
+                value="Delete this list"
+                type="button"
+                onclick="location.href=
+                '{% url "list-delete" todo_list.id %}'" />
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+"todoitem_confirm_delete.html"
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Delete To-do Item</h3>
+
+<p>Are you sure you want to delete the item: <b>{{ object.title }}</b>
+   from the list <i>{{ todo_list.title }}</i>?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <input
+        value="Yes, delete."
+        type="submit">
+    <input
+        value="Cancel"
+        type="button"
+        onclick="location.href='{% url "list" todo_list.id %}';">
+</form>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+"todoitem_form.html"
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>{{ title }}</h3>
+<form method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input
+        value="Submit"
+        type="submit">
+    <input
+        value="Cancel"
+        type="button"
+        onclick="location.href='{% url "list" todo_list.id %}'">
+    {% if object %}
+        <input
+            value="Delete this item"
+            type="button"
+            onclick="location.href=
+            '{% url "item-delete" todo_list.id object.id %}'">
+    {% endif %}
+</form>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+"todolist_confirm_delete.html"
+
+{% extends "base.html" %}
+
+{% block content %}
+<!--todolist_confirm_delete.html-->
+
+<h3>Delete List</h3>
+
+<p>Are you sure you want to delete the list <i>{{ object.title }}</i>?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <input
+        value="Yes, delete."
+        type="submit">
+</form>
+<input
+    value="Cancel"
+    type="button"
+    onclick="location.href='{% url "index" %}';">
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+"todolist_form.html"
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>{{ title }}</h3>
+<div>
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input
+                value="Save"
+                type="submit">
+            <input
+                value="Cancel"
+                type="button"
+                onclick="location.href='{% url "index" %}';">
+        </form>
+    </div>
+</div>
+
+{% endblock %}

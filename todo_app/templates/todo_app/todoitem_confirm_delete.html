@@ -1,0 +1,28 @@
+<!-- todo_list/todo_app/templates/todo_app/todoitem_confirm_delete.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="confirm-dialog">
+    <h3><i class="fas fa-exclamation-triangle" style="color: var(--warning-color);"></i> Delete To-do Item</h3>
+
+    <p>Are you sure you want to delete the item: <b>{{ object.title }}</b>
+       from the list <i>{{ todo_list.title }}</i>?</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="button-container" style="justify-content: center;">
+            <input
+                value="Yes, delete"
+                type="submit"
+                class="btn btn-danger icon-delete">
+            <input
+                value="Cancel"
+                type="button"
+                class="btn btn-secondary icon-cancel"
+                onclick="location.href='{% url "list" todo_list.id %}';">
+        </div>
+    </form>
+</div>
+
+{% endblock %}

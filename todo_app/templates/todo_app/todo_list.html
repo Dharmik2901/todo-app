@@ -1,0 +1,49 @@
+<!-- todo_list/todo_app/templates/todo_app/todo_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <div>
+        <div>
+            <h3><i class="fas fa-edit"></i> Edit list:</h3>
+            <h5>{{ todo_list.title | upper }}</h5>
+        </div>
+        <ul>
+            {% for todo in object_list %}
+            <li>
+                <div class="todo-item"
+                     role="button"
+                     onclick="location.href='{% url "item-update" todo_list.id todo.id %}'">
+                    <div>
+                        <strong>{{ todo.title }}</strong>
+                        <div style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.25rem;">
+                            <i class="fas fa-calendar-alt" style="margin-right: 0.25rem;"></i>
+                            Due {{ todo.due_date | date:"l, F j" }}
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-tasks"></i>
+                <p>There are no to-do items in this list.</p>
+                <p style="color: var(--gray-500); font-size: 0.875rem;">Add your first item to get started!</p>
+            </div>
+            {% endfor %}
+        </ul>
+        
+        <div class="button-container">
+            <input
+                value="Add a new item"
+                type="button"
+                class="btn btn-primary icon-add"
+                onclick="location.href='{% url "item-add" todo_list.id %}'" />
+            <input
+                value="Delete this list"
+                type="button"
+                class="btn btn-danger icon-delete"
+                onclick="location.href='{% url "list-delete" todo_list.id %}'" />
+        </div>
+    </div>
+</div>
+{% endblock %}
